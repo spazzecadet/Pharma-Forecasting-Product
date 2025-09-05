@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from routers import baseline, runs, backtesting, scenarios, dashboard, auth, hierarchical, advanced_models, monitoring, streaming
+from routers import baseline, runs, backtesting, scenarios, dashboard, auth, hierarchical, advanced_models, monitoring, streaming, data_upload
 
 
 app = FastAPI(
@@ -29,6 +29,7 @@ app.include_router(hierarchical.router)
 app.include_router(advanced_models.router)
 app.include_router(monitoring.router)
 app.include_router(streaming.router)
+app.include_router(data_upload.router)
 
 
 if __name__ == "__main__":

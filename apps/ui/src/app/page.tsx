@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { useRouter } from 'next/navigation'
 import { 
   BarChart3, 
   TrendingUp, 
@@ -9,7 +10,10 @@ import {
   Activity,
   Brain,
   Shield,
-  Zap
+  Zap,
+  Upload,
+  Settings,
+  LogOut
 } from 'lucide-react'
 
 interface DashboardStats {
@@ -31,14 +35,33 @@ export default function Dashboard() {
   const [stats, setStats] = useState<DashboardStats | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const [user, setUser] = useState<any>(null)
+  const router = useRouter()
 
   useEffect(() => {
+    const token = localStorage.getItem('token')
+    const userData = localStorage.getItem('user')
+    
+    if (!token) {
+      router.push('/login')
+      return
+    }
+    
+    if (userData) {
+      setUser(JSON.parse(userData))
+    }
+    
     fetchDashboardData()
-  }, [])
+  }, [router])
 
   const fetchDashboardData = async () => {
     try {
-      const response = await fetch('/api/dashboard/portfolio')
+      const token = localStorage.getItem('token')
+      const response = await fetch('/api/dashboard/portfolio', {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      })
       if (!response.ok) {
         throw new Error('Failed to fetch dashboard data')
       }
@@ -49,6 +72,12 @@ export default function Dashboard() {
     } finally {
       setLoading(false)
     }
+  }
+
+  const handleLogout = () => {
+    localStorage.removeItem('token')
+    localStorage.removeItem('user')
+    router.push('/login')
   }
 
   if (loading) {
@@ -96,6 +125,23 @@ export default function Dashboard() {
                 <Activity className="h-5 w-5 text-blue-500" />
                 <span className="text-sm text-gray-600">Live</span>
               </div>
+              <div className="flex items-center space-x-2">
+                <span className="text-sm text-gray-600">Welcome, {user?.username}</span>
+              </div>
+              <button
+                onClick={() => router.push('/upload')}
+                className="btn-secondary flex items-center"
+              >
+                <Upload className="h-4 w-4 mr-2" />
+                Upload Data
+              </button>
+              <button
+                onClick={handleLogout}
+                className="btn-secondary flex items-center"
+              >
+                <LogOut className="h-4 w-4 mr-2" />
+                Logout
+              </button>
             </div>
           </div>
         </div>
