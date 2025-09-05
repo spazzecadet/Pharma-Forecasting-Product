@@ -1,6 +1,9 @@
 import uuid
 from datetime import datetime
 from typing import Dict, List
+import sys
+from pathlib import Path
+import pandas as pd
 
 from fastapi import APIRouter, HTTPException
 from models import (
@@ -11,6 +14,13 @@ from models import (
     RunStatus,
     ForecastPoint,
 )
+
+# Add repo root to path for MLflow imports
+repo_root = Path(__file__).resolve().parents[3]
+if str(repo_root) not in sys.path:
+    sys.path.append(str(repo_root))
+
+from ml.experiment_tracking import tracker  # type: ignore
 
 router = APIRouter(prefix="/runs", tags=["runs"])
 
@@ -23,12 +33,23 @@ results_db: Dict[str, ForecastResult] = {}
 def create_run(req: CreateRunRequest):
     """Create a new forecast run."""
     run_id = str(uuid.uuid4())
+    
+    # Start MLflow tracking
+    mlflow_run_id = tracker.start_forecast_run(
+        run_id=run_id,
+        brand_id=req.brand_id,
+        model_type=req.model_type.value,
+        horizon=req.horizon,
+        params=req.params
+    )
+    
     run = ForecastRun(
         run_id=run_id,
         brand_id=req.brand_id,
         model_type=req.model_type,
         horizon=req.horizon,
         params=req.params,
+        mlflow_run_id=mlflow_run_id,
     )
     runs_db[run_id] = run
     return run
@@ -75,6 +96,20 @@ def execute_run(run_id: str):
             points = _execute_xgboost_forecast(run)
         else:
             raise HTTPException(status_code=400, detail="Unsupported model type")
+        
+        # Log metrics to MLflow
+        if run.mlflow_run_id:
+            tracker.log_forecast_metrics(
+                mlflow_run_id=run.mlflow_run_id,
+                metrics={
+                    "horizon": run.horizon,
+                    "forecast_mean": sum(p.yhat for p in points) / len(points),
+                    "forecast_total": sum(p.yhat for p in points)
+                },
+                artifacts={
+                    "forecast_points": pd.DataFrame([{"step": p.step, "yhat": p.yhat} for p in points])
+                }
+            )
         
         # Create result
         result = ForecastResult(

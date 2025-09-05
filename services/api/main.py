@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from routers import baseline, runs, backtesting, scenarios
+from routers import baseline, runs, backtesting, scenarios, dashboard
 
 
 app = FastAPI(title="Pharma Forecasting API", version="0.1.0")
@@ -13,6 +13,7 @@ app.include_router(baseline.router)
 app.include_router(runs.router)
 app.include_router(backtesting.router)
 app.include_router(scenarios.router)
+app.include_router(dashboard.router)
 
 
 if __name__ == "__main__":
