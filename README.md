@@ -29,9 +29,9 @@ pip install -r requirements.txt
 uvicorn main:app --reload --port 8000
 ```
 
-### Calling ARIMA endpoint
+### API Endpoints
 
-The ARIMA endpoint depends on ML libraries. Install ML requirements first:
+Install ML requirements for full functionality:
 
 ```bash
 cd /Users/gnanarammohankumar/pharma-forecasting
@@ -39,12 +39,65 @@ python3 -m venv .venv && source .venv/bin/activate
 pip install -r ml/requirements.txt
 ```
 
-Then, with the API running, POST:
+#### Core Endpoints
 
+**Health Check**
+```bash
+curl http://localhost:8000/health
+```
+
+**Baseline Forecasting**
 ```bash
 curl -s http://localhost:8000/baseline/arima \
   -H 'Content-Type: application/json' \
   -d '{"brand_id":"BRAND_A","horizon":12}' | jq .
+```
+
+**Forecast Runs Management**
+```bash
+# Create a run
+curl -s http://localhost:8000/runs/ \
+  -H 'Content-Type: application/json' \
+  -d '{"brand_id":"BRAND_A","model_type":"arima","horizon":12}' | jq .
+
+# List runs
+curl -s http://localhost:8000/runs/ | jq .
+
+# Execute run (replace RUN_ID)
+curl -s -X POST http://localhost:8000/runs/RUN_ID/execute | jq .
+```
+
+**Backtesting**
+```bash
+# Single model backtest
+curl -s http://localhost:8000/backtest/ \
+  -H 'Content-Type: application/json' \
+  -d '{"brand_id":"BRAND_A","model_type":"arima","test_periods":12}' | jq .
+
+# Compare models
+curl -s -X POST "http://localhost:8000/backtest/compare?brand_id=BRAND_A&test_periods=12" | jq .
+```
+
+**Scenario Analysis**
+```bash
+# Price scenario
+curl -s -X POST "http://localhost:8000/scenarios/quick-price-test?brand_id=BRAND_A&baseline_price=100&scenario_price=110&horizon=12" | jq .
+
+# Custom scenario
+curl -s http://localhost:8000/scenarios/ \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "brand_id":"BRAND_A",
+    "model_type":"arima",
+    "horizon":12,
+    "variables":[{
+      "name":"coverage",
+      "baseline_value":0.8,
+      "scenario_value":0.9,
+      "impact_factor":0.5
+    }],
+    "description":"Coverage increase scenario"
+  }' | jq .
 ```
 
 ## Next Steps
