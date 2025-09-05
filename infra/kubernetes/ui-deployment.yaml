@@ -1,0 +1,60 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pharma-forecasting-ui
+  namespace: pharma-forecasting
+  labels:
+    app: pharma-forecasting-ui
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: pharma-forecasting-ui
+  template:
+    metadata:
+      labels:
+        app: pharma-forecasting-ui
+    spec:
+      containers:
+      - name: ui
+        image: pharma-forecasting-ui:latest
+        ports:
+        - containerPort: 3000
+        env:
+        - name: API_BASE_URL
+          valueFrom:
+            configMapKeyRef:
+              name: pharma-forecasting-config
+              key: API_BASE_URL
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "100m"
+          limits:
+            memory: "512Mi"
+            cpu: "200m"
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 3000
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 3000
+          initialDelaySeconds: 5
+          periodSeconds: 5
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: pharma-forecasting-ui
+  namespace: pharma-forecasting
+spec:
+  selector:
+    app: pharma-forecasting-ui
+  ports:
+  - port: 3000
+    targetPort: 3000
+  type: ClusterIP

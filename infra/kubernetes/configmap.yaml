@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: pharma-forecasting-config
+  namespace: pharma-forecasting
+data:
+  API_BASE_URL: "http://pharma-forecasting-api:8000"
+  MLFLOW_TRACKING_URI: "http://pharma-forecasting-mlflow:5000"
+  DATABASE_URL: "postgresql://pharma:password@postgres:5432/pharma_forecasting"
+  REDIS_URL: "redis://redis:6379"
+  JWT_SECRET_KEY: "your-production-secret-key-change-this"
+  ENVIRONMENT: "production"

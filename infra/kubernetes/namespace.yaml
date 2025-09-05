@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: pharma-forecasting
+  labels:
+    name: pharma-forecasting
+    environment: production
