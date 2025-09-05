@@ -1,0 +1,9 @@
+dagster==1.7.11
+dagit==1.7.11
+pandas==2.2.2
+numpy==1.26.4
+mlflow==2.12.1
+statsmodels==0.14.1
+scikit-learn==1.4.2
+xgboost==2.0.3
+

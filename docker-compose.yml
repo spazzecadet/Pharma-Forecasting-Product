@@ -1,0 +1,28 @@
+version: "3.9"
+
+services:
+  api:
+    build: ./services/api
+    container_name: pharma-api
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./services/api:/app
+    environment:
+      - PYTHONUNBUFFERED=1
+    restart: unless-stopped
+
+  mlflow:
+    build: ./infra/docker/mlflow
+    container_name: pharma-mlflow
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./infra/docker/mlflow:/opt/mlflow
+      - ./ml/mlruns:/opt/mlflow/artifacts
+    restart: unless-stopped
+
+networks:
+  default:
+    driver: bridge
+
