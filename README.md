@@ -100,9 +100,58 @@ curl -s http://localhost:8000/scenarios/ \
   }' | jq .
 ```
 
+**Dashboard & Analytics**
+```bash
+# Portfolio overview
+curl -s http://localhost:8000/dashboard/portfolio | jq .
+
+# Brand metrics
+curl -s http://localhost:8000/dashboard/brands/BRAND_A/metrics | jq .
+
+# Accuracy metrics
+curl -s http://localhost:8000/dashboard/accuracy | jq .
+
+# Model comparison
+curl -s http://localhost:8000/dashboard/model-comparison?brand_id=BRAND_A | jq .
+
+# Health check
+curl -s http://localhost:8000/dashboard/health-check | jq .
+```
+
+## Features Implemented
+
+✅ **Core API Services**
+- FastAPI backend with health checks and Swagger docs
+- Forecast runs management (create, execute, track)
+- Backtesting with rolling windows and metrics (MAPE, WAPE, MAE, RMSE, bias)
+- Scenario simulation for what-if analysis
+- Dashboard API for executive metrics and portfolio overview
+
+✅ **ML & Experimentation**
+- ARIMA and XGBoost baseline models
+- MLflow integration for experiment tracking
+- Model comparison and performance metrics
+- Rolling window backtesting with configurable parameters
+
+✅ **Data Management**
+- Semantic data model with entities (Brand, Geography, Channel, etc.)
+- Connector stubs for IQVIA and database sources
+- Sample data with multiple brands and geographies
+- Data quality validation framework
+
+✅ **DevOps & CI/CD**
+- GitHub Actions for Python linting and testing
+- Docker support for API and MLflow services
+- Pre-commit hooks for code quality
+- Comprehensive test suite
+
 ## Next Steps
 
-- Add ML baselines (ARIMA + XGBoost) with MLflow tracking
-- Scaffold Next.js UI
+- Add authentication and authorization (SSO, RBAC)
+- Implement hierarchical forecasting and reconciliation
+- Add more ML models (Prophet, LSTM, TFT)
+- Build React/Next.js frontend dashboard
+- Add real-time data connectors
+- Implement model monitoring and drift detection
 - Add Dagster pipelines for training/forecast runs
 

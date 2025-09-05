@@ -1,0 +1,6 @@
+brand_id,molecule,form,strength,indication,launch_date,loe_date,therapeutic_area
+BRAND_A,Acetaminophen,Tablet,500mg,Pain Management,2020-01-01,2025-12-31,Analgesics
+BRAND_B,Ibuprofen,Capsule,200mg,Inflammation,2019-06-15,2026-06-15,NSAIDs
+BRAND_C,Omeprazole,Tablet,20mg,Acid Reflux,2021-03-01,2027-03-01,Proton Pump Inhibitors
+BRAND_D,Metformin,Tablet,500mg,Diabetes,2018-09-01,2024-09-01,Antidiabetics
+BRAND_E,Lisinopril,Tablet,10mg,Hypertension,2017-12-01,2023-12-01,ACE Inhibitors

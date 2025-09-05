@@ -1,0 +1,11 @@
+geo_id,country,region,market_tier
+US,United States,North America,Tier 1
+CA,Canada,North America,Tier 1
+UK,United Kingdom,Europe,Tier 1
+DE,Germany,Europe,Tier 1
+FR,France,Europe,Tier 1
+JP,Japan,Asia Pacific,Tier 1
+AU,Australia,Asia Pacific,Tier 2
+BR,Brazil,Latin America,Tier 2
+MX,Mexico,Latin America,Tier 2
+IN,India,Asia Pacific,Tier 3
